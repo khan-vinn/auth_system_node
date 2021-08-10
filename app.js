@@ -9,7 +9,7 @@ const app = express();
 appUtils(app)
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/_api/user', usersRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
