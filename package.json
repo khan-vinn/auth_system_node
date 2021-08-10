@@ -14,7 +14,10 @@
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "less-middleware": "~2.2.1",
+    "mongodb": "^3.6.11",
+    "mongoose": "^5.13.6",
     "morgan": "~1.9.1",
+    "nanoid": "^3.1.23",
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
