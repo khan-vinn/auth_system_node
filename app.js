@@ -3,24 +3,24 @@ const express = require('express');
 const appUtils = require('./utils')
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const userRouter = require('./routes/user');
 const app = express();
 
 appUtils(app)
 
 app.use('/', indexRouter);
-app.use('/_api/user', usersRouter);
+app.use('/_api/user', userRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
 app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).json({ "message": "error", status: 500 })
+  // res.render('error');
 });
 
 module.exports = app;
