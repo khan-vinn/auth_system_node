@@ -12,7 +12,7 @@ async function authenticateToken(req, res, next) {
             || req.query.token
             || req.headers["x-access-token"]
             || req.headers['authorization']?.split(' ')[1]
-        res.user = await jwt.verify(token, process.env.JWT_SECRET)
+        req.user = await jwt.verify(token, process.env.JWT_SECRET)
         return next()
     } catch (error) {
         console.log(error)
