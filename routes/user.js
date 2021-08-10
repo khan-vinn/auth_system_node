@@ -1,21 +1,40 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const { UserParamsValidate } = require('../middlewares/user');
+const { User } = require('../models');
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+  res.json({
+    "status": 200,
+    "message": "respond with a resource",
+    "ip": req.ip
+  });
 });
 
-router.all('/signin', function (req, res, next) {
-  res.send('respond with a resource signin');
-});
+router.all('/signin',
+  UserParamsValidate,
+  (req, res, next) => {
+    res.json({
+      "status": 200,
+      "message": "respond with a resource signIn"
+    });
+  });
 
-router.all('/signup', function (req, res, next) {
-  res.send('respond with a resource signUp');
-});
+router.all('/signup',
+  UserParamsValidate,
+  (req, res, next) => {
+    res.json({
+      "status": 200,
+      "message": "respond with a resource signUp"
+    });
+  });
 
-router.all('/logout', function (req, res, next) {
-  res.send('respond with a resource logout');
+router.all('/signout', function (req, res, next) {
+  res.json({
+    "status": 200,
+    "message": "respond with a resource signout"
+  });
 });
 
 

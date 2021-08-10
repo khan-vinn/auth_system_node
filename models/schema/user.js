@@ -2,11 +2,6 @@ const { nanoid } = require("nanoid")
 const mongoose = require("mongoose")
 
 const UserSchema = mongoose.Schema({
-    _id: {
-        type: mongoose.Types.ObjectId,
-        default: () => mongoose.Types.ObjectId(),
-        unique: true
-    },
     email: {
         type: String,
         required: true,
