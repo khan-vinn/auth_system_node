@@ -13,4 +13,13 @@ function UserParamsValidate(req, res, next) {
     }
 }
 
-module.exports = { UserParamsValidate }
+function userTokenValidate(req, res, next) {
+    const { token } = req.body
+    if (token && typeof (token) === "string" && token.length > 20) {
+        return next()
+    } else {
+        return res.status(403).json({ "please check token/ Token is required"})
+    }
+}
+
+module.exports = { UserParamsValidate, userTokenValidate }

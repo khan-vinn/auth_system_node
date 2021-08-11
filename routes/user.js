@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt")
 const { UserParamsValidate } = require('../middlewares/user');
 const { User } = require('../models');
-const { generateAccessToken } = require('../middlewares/auth');
+const { generateAccessToken, decodeToken } = require('../middlewares/auth');
 const router = express.Router();
 
 /* GET users listing. */
@@ -17,10 +17,24 @@ router.get('/', function (req, res, next) {
 router.all('/signin',
   UserParamsValidate,
   (req, res, next) => {
-    res.json({
-      "status": 200,
-      "message": "respond with a resource signIn"
-    });
+    const { email, password, username } = req.body
+    User.findOne({ email, username })
+      .then((user) => {
+        if (!user) {
+          throw new Error("Dont find username")
+        } else {
+          bcrypt.compare(user.pasword, password)
+        }
+      })
+      .then((message) => {
+        if (!message) {
+          throw new Error("Password is incorrected")
+        } else {
+          return generateAccessToken({ email, userAgent: req.get('User-Agent') })
+        }
+      }).then((token) => User.findOneAndUpdate({ email }, { token }))
+      .then((user) => res.code(200).json({ code: 200, token: user.token }))
+      .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
   });
 
 router.all('/signup',
@@ -33,7 +47,7 @@ router.all('/signup',
         if (user) {
           throw new Error("try another email")
         } else {
-          return generateAccessToken({ email, ip: req.ip, userAgent: req.get('User-Agent') })
+          return generateAccessToken({ email, userAgent: req.get('User-Agent') })
         }
       })
       .then((token) => {
@@ -42,14 +56,15 @@ router.all('/signup',
       })
       .then((hash) => User.create({ email, token: savedToken, password: hash }))
       .then((user) => res.code(200).json({ code: 200, token: user.token }))
-      .catch((e) => res.code(400).json({ code: 500, message: `${e.name}::${e.message}` }))
+      .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
   });
 
 router.all('/signout', function (req, res, next) {
-  res.json({
-    "status": 200,
-    "message": "respond with a resource signout"
-  });
+  const { token } = req.body
+  decodeToken(token)
+    .then(user => User.findOneAndRemove({ email: user.email, token }))
+    .then(() => res.code(200).json({ code: 200, message: "OK" }))
+    .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
 });
 
 
