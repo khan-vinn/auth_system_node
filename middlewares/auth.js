@@ -8,12 +8,20 @@ async function generateAccessToken(data) {
 }
 
 async function decodeToken(token) {
-    const res = await jwt.decode(token)
-    return res
+    try {
+        const res = await jwt.decode(token)
+        return res
+    } catch (e) {
+        throw new Error("error in parse token")
+    }
 }
 async function verifyToken(data) {
-    const res = await jwt.verify(data, process.env.JWT_SECRET)
-    return res
+    try {
+        const res = await jwt.verify(data, process.env.JWT_SECRET)
+        return res
+    } catch (e) {
+        throw new Error("error in verify token")
+    }
 }
 
 function updateUserToken(req, res, next) {
@@ -31,7 +39,7 @@ function updateUserToken(req, res, next) {
             req.user = user;
             return next()
         })
-        .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
+        .cath((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
 }
 
 function userTokenVerify(req, res, next) {
@@ -52,7 +60,7 @@ function userTokenVerify(req, res, next) {
                 return next()
             }
         })
-        .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
+        .cath((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
 }
 
 module.exports = { generateAccessToken, userTokenVerify, decodeToken, updateUserToken }

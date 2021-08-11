@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require("bcrypt")
-const { UserParamsValidate } = require('../middlewares/user');
+const { UserParamsValidate, userParamsTokenValidate } = require('../middlewares/user');
 const { User } = require('../models');
 const { generateAccessToken, decodeToken } = require('../middlewares/auth');
 const router = express.Router();
@@ -17,11 +17,11 @@ router.get('/', function (req, res, next) {
 router.all('/signin',
   UserParamsValidate,
   (req, res) => {
-    const { email, password, username } = req.body
-    User.findOne({ email, username })
-      .then((user) => {
-        if (!user) {
-          throw new Error("Dont find username")
+    const { email, password } = req.body
+    User.findOne({ email })
+      .then(user => {
+        if (user) {
+          throw new Error("Don't find user")
         } else {
           return bcrypt.compare(user.pasword, password)
         }
@@ -34,8 +34,8 @@ router.all('/signin',
         }
       })
       .then((token) => User.findOneAndUpdate({ email }, { token }))
-      .then((user) => res.code(200).json({ code: 200, token: user.token }))
-      .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
+      .then((user) => res.status(200).json({ code: 200, token: user.token }))
+      .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
   });
 
 router.all('/signup',
@@ -56,16 +56,22 @@ router.all('/signup',
         return bcrypt.hash(password, 12)
       })
       .then((hash) => User.create({ email, token: savedToken, password: hash }))
-      .then((user) => res.code(200).json({ code: 200, token: user.token }))
-      .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
+      .then((user) => res.status(200).json({ code: 200, token: user.token }))
+      .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
   });
 
-router.all('/signout', function (req, res) {
+router.all('/signout', userParamsTokenValidate, function (req, res) {
   const { token } = req.body
   decodeToken(token)
-    .then(user => User.findOneAndRemove({ email: user.email }, { token }))
-    .then(() => res.code(200).json({ code: 200, message: "OK" }))
-    .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
+    .then(user => {
+      if (user) {
+        return User.findOneAndRemove({ email: user.email }, { token })
+      } else {
+        throw new Error("error in parse token")
+      }
+    })
+    .then(() => res.status(200).json({ code: 200, message: "OK" }))
+    .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
 });
 
 
