@@ -13,7 +13,7 @@ function UserParamsValidate(req, res, next) {
     }
 }
 
-function userTokenValidate(req, res, next) {
+function userParamsTokenValidate(req, res, next) {
     const { token } = req.body
     if (token && typeof (token) === "string" && token.length > 20) {
         return next()

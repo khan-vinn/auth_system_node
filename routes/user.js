@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
 
 router.all('/signin',
   UserParamsValidate,
-  (req, res, next) => {
+  (req, res) => {
     const { email, password, username } = req.body
     User.findOne({ email, username })
       .then((user) => {
@@ -32,14 +32,15 @@ router.all('/signin',
         } else {
           return generateAccessToken({ email, userAgent: req.get('User-Agent') })
         }
-      }).then((token) => User.findOneAndUpdate({ email }, { token }))
+      })
+      .then((token) => User.findOneAndUpdate({ email }, { token }))
       .then((user) => res.code(200).json({ code: 200, token: user.token }))
       .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
   });
 
 router.all('/signup',
   UserParamsValidate,
-  (req, res, next) => {
+  (req, res) => {
     const { email, password } = req.body
     let savedToken;
     User.findOne({ email })
@@ -59,10 +60,10 @@ router.all('/signup',
       .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
   });
 
-router.all('/signout', function (req, res, next) {
+router.all('/signout', function (req, res) {
   const { token } = req.body
   decodeToken(token)
-    .then(user => User.findOneAndRemove({ email: user.email, token }))
+    .then(user => User.findOneAndRemove({ email: user.email }, { token }))
     .then(() => res.code(200).json({ code: 200, message: "OK" }))
     .catch((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
 });

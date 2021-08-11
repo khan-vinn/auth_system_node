@@ -34,7 +34,7 @@ function updateUserToken(req, res, next) {
         .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
 }
 
-function userTokenValidate(req, res, next) {
+function userTokenVerify(req, res, next) {
     const { token } = req.body
     verifyToken(token)
         .then(props => {
@@ -55,4 +55,4 @@ function userTokenValidate(req, res, next) {
         .cath((e) => res.code(500).json({ code: 500, message: `${e.name}::${e.message}` }))
 }
 
-module.exports = { generateAccessToken, userTokenValidate, decodeToken, updateUserToken }
+module.exports = { generateAccessToken, userTokenVerify, decodeToken, updateUserToken }
