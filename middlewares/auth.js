@@ -3,8 +3,12 @@ const jwt = require("jsonwebtoken")
 const { User } = require("../models")
 
 async function generateAccessToken(data) {
-    const res = await jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "21d" })
-    return res
+    try {
+        const res = await jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "21d" })
+        return res
+    } catch (e) {
+        throw new Error("error in generate token")
+    }
 }
 
 async function decodeToken(token) {
@@ -36,7 +40,7 @@ function updateUserToken(req, res, next) {
         })
         .then((newToken) => User.findOneAndUpdate({ token }, { token: newToken }))
         .then((user) => {
-            req.user = user;
+            res.locals.user = user;
             return next()
         })
         .cath((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
@@ -56,7 +60,7 @@ function userTokenVerify(req, res, next) {
             if (!user) {
                 throw new Error("Dont find user")
             } else {
-                req.user = user
+                res.locals.user = user
                 return next()
             }
         })
