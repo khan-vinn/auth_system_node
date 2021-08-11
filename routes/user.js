@@ -23,7 +23,7 @@ router.all('/signin',
         if (!user) {
           throw new Error("Dont find username")
         } else {
-          bcrypt.compare(user.pasword, password)
+          return bcrypt.compare(user.pasword, password)
         }
       })
       .then((message) => {
