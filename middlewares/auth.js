@@ -3,17 +3,29 @@ const jwt = require("jsonwebtoken")
 const { User } = require("../models")
 
 async function generateAccessToken(data) {
-    const res = await jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "21d" })
-    return res
+    try {
+        const res = await jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "21d" })
+        return res
+    } catch (error) {
+        throw error
+    }
 }
 
 async function decodeToken(token) {
-    const res = await jwt.decode(token)
-    return res
+    try {
+        const res = await jwt.decode(token)
+        return res
+    } catch (error) {
+        throw error
+    }
 }
 async function verifyToken(data) {
-    const res = await jwt.verify(data, process.env.JWT_SECRET)
-    return res
+    try {
+        const res = await jwt.verify(data, process.env.JWT_SECRET)
+        return res
+    } catch (error) {
+        throw error
+    }
 }
 
 function updateUserToken(req, res, next) {
@@ -38,12 +50,25 @@ function userTokenVerify(req, res, next) {
     const { token } = req.body
     verifyToken(token)
         .then(data => {
-            if (data["userAgent"] !== req.get("User-Agent")) {
-                throw new Error("invalid Toke")
-            } else { return User.findOne({ email: data.email, token }) }
+            if (data["userAgent"] !== req.get("User-Agent") && Number(data.exp) * 1000 > Number(new Date())) {
+                throw new Error("invalid token, please update")
+            } else {
+                return User.findOne({ email: data.email })
+            }
         })
-        .then(user => { if (!user) { throw new Error("don't find user") } else { res.locals.user = user; return next() } })
-        .catch(e => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
+        .then(user => {
+            if (!user) {
+                throw new Error("don't find user")
+            } else {
+                if (user.token === token) {
+                    res.locals.user = user;
+                    return next()
+                } else {
+                    throw new Error("token is ancient")
+                }
+            }
+        })
+        .catch(e => res.status(403).json({ code: 403, message: `${e.name} :: ${e.message}` }))
 }
 
 module.exports = { generateAccessToken, userTokenVerify, decodeToken, updateUserToken }

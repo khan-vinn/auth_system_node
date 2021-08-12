@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt")
 const { UserParamsValidate, userParamsTokenValidate } = require('../middlewares/user');
 const { User } = require('../models');
-const { generateAccessToken, decodeToken } = require('../middlewares/auth');
+const { generateAccessToken, decodeToken, userTokenVerify } = require('../middlewares/auth');
 const router = express.Router();
 
 /* GET users listing. */
@@ -20,10 +20,10 @@ router.all('/signin',
     const { email, password } = req.body
     User.findOne({ email })
       .then(user => {
-        if (user) {
+        if (!user) {
           throw new Error("Don't find user")
         } else {
-          return bcrypt.compare(user.pasword, password)
+          return bcrypt.compare(password, user.password)
         }
       })
       .then((message) => {
@@ -33,7 +33,9 @@ router.all('/signin',
           return generateAccessToken({ email, userAgent: req.get('User-Agent') })
         }
       })
-      .then((token) => User.findOneAndUpdate({ email }, { token }))
+      .then((token) => {
+        return User.findOneAndUpdate({ email }, { token }, { new: true })
+      })
       .then((user) => res.status(200).json({ code: 200, token: user.token }))
       .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
   });
@@ -60,16 +62,9 @@ router.all('/signup',
       .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
   });
 
-router.all('/signout', userParamsTokenValidate, function (req, res) {
-  const { token } = req.body
-  decodeToken(token)
-    .then(user => {
-      if (user) {
-        return User.findOneAndRemove({ email: user.email }, { token })
-      } else {
-        throw new Error("error in parse token")
-      }
-    })
+router.all('/signout', userParamsTokenValidate, userTokenVerify, function (req, res) {
+  const { user } = res.locals.user
+  User.findOneAndUpdate({ email: user.email }, { token: "" })
     .then(() => res.status(200).json({ code: 200, message: "OK" }))
     .catch((e) => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
 });
