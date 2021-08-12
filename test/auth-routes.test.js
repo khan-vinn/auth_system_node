@@ -195,6 +195,36 @@ describe("Application auth system check", () => {
                     done()
                 })
         })
+        it("sign with incorrect passowrd", (done) => {
+            chai.request(server)
+                .post("/_api/user/signin")
+                .accept("application/json")
+                .send({ email, password: `${password}${nanoid(4)}` })
+                .end((err, res) => {
+                    res.should.have.status(500)
+                    res.body.should.have.property("message")
+                    res.body.message.should.to.have.lengthOf.above(10)
+                    res.body.message.should.be.equal("Error :: Password is incorrected")
+                    res.body.should.have.property("status")
+                    res.body.status.should.be.equal(500)
+                    signInSecondToken = res.body.token
+                    done()
+                })
+        })
+        it("request with old token", (done) => {
+            chai.request(server)
+                .post("/")
+                .accept("application/json")
+                .send({ token: signInFirstToken })
+                .end((err, res) => {
+                    res.should.have.status(403)
+                    res.body.should.have.property("message")
+                    res.body.should.have.property("status")
+                    res.body.message.should.be.equal("Error :: token is ancient")
+                    res.body.status.should.be.equal(res.status)
+                    done()
+                })
+        })
         it("signIn and SignUp tokens are not equal", (done) => {
             expect(signInFirstToken).is.not.equal(signUpToken)
             done()
