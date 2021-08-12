@@ -68,7 +68,7 @@ function userTokenVerify(req, res, next) {
                 }
             }
         })
-        .catch(e => res.status(403).json({ code: 403, message: `${e.name} :: ${e.message}` }))
+        .catch(e => res.status(403).json({ status: 403, message: `${e.name} :: ${e.message}` }))
 }
 
 module.exports = { generateAccessToken, userTokenVerify, decodeToken, updateUserToken }
