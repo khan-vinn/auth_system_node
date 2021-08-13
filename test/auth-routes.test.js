@@ -2,6 +2,7 @@ const server = require("../app")
 const chai = require("chai")
 const { nanoid } = require("nanoid")
 const { expect } = require("chai")
+const { User } = require("../models")
 chaiHTTP = require("chai-http")
 
 server.listen(3000, () => console.log("server listen"))
@@ -45,6 +46,9 @@ describe("Prime route test", () => {
 })
 
 describe("Application auth system check", () => {
+    after(async () => {
+        await User.findOneAndDelete({ email })
+    })
     describe("Signin with fake email, password", () => {
         it("email is required option?", (done) => {
             chai.request(server)
