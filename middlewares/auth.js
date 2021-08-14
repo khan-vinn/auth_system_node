@@ -43,7 +43,7 @@ function updateUserToken(req, res, next) {
             res.locals.user = user;
             return next()
         })
-        .cath(e => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
+        .cath(e => res.status(500).json({ status: 500, message: `${e.name} :: ${e.message}` }))
 }
 
 function userTokenVerify(req, res, next) {
@@ -68,7 +68,7 @@ function userTokenVerify(req, res, next) {
                 }
             }
         })
-        .catch(e => res.status(403).json({ code: 403, message: `${e.name} :: ${e.message}` }))
+        .catch(e => res.status(403).json({ status: 403, message: `${e.name} :: ${e.message}` }))
 }
 
 module.exports = { generateAccessToken, userTokenVerify, decodeToken, updateUserToken }
