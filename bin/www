@@ -22,7 +22,7 @@ app.set('port', port);
 const server = http.createServer(app);
 
 /* Database */
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGO_URI_TEST, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
