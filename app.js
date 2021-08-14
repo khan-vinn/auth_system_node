@@ -8,14 +8,6 @@ const userRouter = require('./routes/user');
 const app = express();
 
 appUtils(app)
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-})
-  .then(() => console.log("connected to DB"))
-  .catch((e) => console.log(e))
 
 app.use('/', indexRouter);
 app.use('/_api/user', userRouter);
