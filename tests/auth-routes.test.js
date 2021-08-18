@@ -42,7 +42,7 @@ describe("Auth routes test setup", () => {
             expect(response.body).toBeTruthy()
             expect(status).toBe(403)
             expect(message).toBeTruthy()
-            expect(message).toMatch(/20/)
+            expect(message).toMatch(/required/)
             expect(message.length).toBeGreaterThan(10)
             expect(message.length).toBeLessThan(80)
         })
