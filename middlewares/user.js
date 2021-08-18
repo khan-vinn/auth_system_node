@@ -18,7 +18,7 @@ function userParamsTokenValidate(req, res, next) {
     if (token && typeof (token) === "string" && token.length > 20) {
         return next()
     } else {
-        return res.status(403).json({ status: 403, message: "please check token/ Token is required, and length will more then 20" })
+        return res.status(403).json({ status: 403, message: "please check token/ Token is required" })
     }
 }
 
