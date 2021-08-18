@@ -43,7 +43,7 @@ function updateUserToken(req, res, next) {
             res.locals.user = user;
             return next()
         })
-        .cath(e => res.status(500).json({ code: 500, message: `${e.name} :: ${e.message}` }))
+        .cath(e => res.status(500).json({ status: 500, message: `${e.name} :: ${e.message}` }))
 }
 
 function userTokenVerify(req, res, next) {

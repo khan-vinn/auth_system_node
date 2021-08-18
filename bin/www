@@ -19,7 +19,10 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
+
 const server = http.createServer(app);
+
+/* Database */
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -28,9 +31,6 @@ mongoose.connect(process.env.MONGO_URI, {
   useCreateIndex: true
 })
   .then(() => console.log("connected to DB"))
-  /**
- * Listen on provided port, on all network interfaces.
- */
   .then(() => server.listen(port, () => {
     console.log(`http://127.0.0.1:${process.env.PORT}/ || http://localhost:${process.env.PORT}/`)
   }))

@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt")
 const { UserParamsValidate, userParamsTokenValidate } = require('../middlewares/user');
 const { User } = require('../models');
-const { generateAccessToken, decodeToken, userTokenVerify } = require('../middlewares/auth');
+const { generateAccessToken, userTokenVerify } = require('../middlewares/auth');
 const router = express.Router();
 
 /* GET users listing. */

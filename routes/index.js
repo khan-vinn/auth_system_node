@@ -4,7 +4,7 @@ const { userParamsTokenValidate } = require('../middlewares/user');
 const router = express.Router();
 
 /* GET home page. */
-router.post('/', userParamsTokenValidate, userTokenVerify, function (req, res, next) {
+router.all('/', userParamsTokenValidate, userTokenVerify, function (req, res, next) {
   res.json({ title: 'Express', user: res.locals.user.email });
 });
 
