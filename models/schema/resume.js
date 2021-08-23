@@ -1,10 +1,10 @@
 const mongoose = require("mongoose")
 
 const ResumeSchema = mongoose.Schema({
-    _creator: {
+    belengs_to: {
         type: mongoose.Types.ObjectId,
         required: true
-    },
+    }
 })
 
 module.exports = ResumeSchema
