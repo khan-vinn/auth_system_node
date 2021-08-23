@@ -26,6 +26,6 @@ const UserSchema = mongoose.Schema({
     token: {
         type: String
     }
-})
+}, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } })
 
 module.exports = UserSchema

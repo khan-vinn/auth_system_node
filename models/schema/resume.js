@@ -5,6 +5,6 @@ const ResumeSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         required: true
     }
-})
+}, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } })
 
 module.exports = ResumeSchema
