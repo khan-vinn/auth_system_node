@@ -28,6 +28,6 @@ const quizeSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     }
-}, { timeStamps: true })
+}, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } })
 
 module.exports = quizeSchema
