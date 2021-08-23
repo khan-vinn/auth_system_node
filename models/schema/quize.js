@@ -16,13 +16,21 @@ const querySchema = mongoose.Schema({
         minLength: 2
     }
 })
+const formSchema = mongoose.Schema({
+    question: {
+        type: String,
+        required: true
+    }, answer: {
+        type: String
+    }
+})
 
 const quizeSchema = mongoose.Schema({
-    answers: {
+    quize: {
         type: [querySchema],
-        required: true,
-        minLength: 1,
-        maxLength: 25
+    },
+    form: {
+        type: [formSchema]
     },
     belongsTo: {
         type: mongoose.Schema.Types.ObjectId,
