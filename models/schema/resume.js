@@ -17,6 +17,7 @@ const InstitutionLocationSchema = mongoose.Schema({
     minLength: 6,
   },
 });
+
 const EducationSchema = mongoose.Schema({
   institutionFullName: {
     type: String,
@@ -33,6 +34,7 @@ const EducationSchema = mongoose.Schema({
     maxLength: 2,
   },
 });
+
 const CompanySchema = mongoose.Schema({
   fullName: {
     type: String,
@@ -44,6 +46,7 @@ const CompanySchema = mongoose.Schema({
     type: Number,
   },
 });
+
 const ExperienceSchema = mongoose.Schema({
   comapany: {
     type: CompanySchema,
