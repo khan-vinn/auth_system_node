@@ -101,6 +101,9 @@ const ResumeSchema = mongoose.Schema({
   user: {
     type: UserSchema,
   },
+  file_location: {
+    type: String,
+  },
 }, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } });
 
 module.exports = ResumeSchema;
