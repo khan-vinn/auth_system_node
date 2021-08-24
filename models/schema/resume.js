@@ -34,7 +34,7 @@ const EducationSchema = mongoose.Schema({
   },
 });
 const CompanySchema = mongoose.Schema({
-  name: {
+  fullName: {
     type: String,
   },
   location: {
