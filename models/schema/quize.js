@@ -1,4 +1,3 @@
-// const { nanoid } = require('nanoid');
 const mongoose = require('mongoose');
 
 const querySchema = mongoose.Schema({
@@ -35,8 +34,13 @@ const quizeSchema = mongoose.Schema({
   },
   belongsTo: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
-}, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } });
+}, {
+  timestamps: {
+    currentTime: () => Math.floor(Date.now() / 1000),
+  },
+});
 
 module.exports = quizeSchema;

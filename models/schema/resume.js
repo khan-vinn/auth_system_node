@@ -97,6 +97,7 @@ const ResumeSchema = mongoose.Schema({
   belengs_to: {
     type: mongoose.Types.ObjectId,
     required: true,
+    ref: 'User',
   },
   user: {
     type: UserSchema,
