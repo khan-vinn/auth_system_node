@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
+const { nanoid } = require('nanoid');
 
 const querySchema = mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    default: () => nanoid(6),
+  },
   question: {
     type: String,
     required: true,
@@ -15,21 +21,23 @@ const querySchema = mongoose.Schema({
     minLength: 2,
   },
 });
+
 const formSchema = mongoose.Schema({
   question: {
     type: String,
     required: true,
   },
-  answer: {
-    type: String,
-  },
 });
 
 const quizeSchema = mongoose.Schema({
-  quize: {
+  title: {
+    type: String,
+    required: true,
+  },
+  queries: {
     type: [querySchema],
   },
-  form: {
+  forms: {
     type: [formSchema],
   },
   belongsTo: {
