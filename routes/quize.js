@@ -20,15 +20,9 @@ async function quizeFindWithId(id) {
 
 router.get('/all/:id?', userParamsTokenValidate, userTokenVerify, (req, res) => {
   const { id } = req.params;
-  if (id && id.length > 0) {
-    quizeFindWithId(id)
-      .then((docs) => res.json({ docs }))
-      .catch((e) => res.json({ error: `${e.name} ${e.message}` }));
-  } else {
-    quizeFindWithId(res.locals.userParamsTokenValidate._id)
-      .then((docs) => res.json({ docs }))
-      .catch((e) => res.json({ error: `${e.name} ${e.message}` }));
-  }
+  quizeFindWithId(id && id.length > 0 ? id : res.locals.user._id)
+    .then((docs) => res.json({ docs }))
+    .catch((e) => res.json({ error: `${e.name} ${e.message}` }));
 });
 
 router.get('/:id', (req, res) => {
@@ -40,11 +34,13 @@ router.get('/:id', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const { query, form } = req.body;
+
   const filterdForm = form.filter((e) => Object.keys(e).includes('question'));
   const filtredQuery = query.filter((e) => Object.keys(e).includes('question')
     && Object.keys(e).includes('answer')
     && Object.keys(e).includes('invalidAnswers')
     && e.invalidAnswers.length > 2);
+
   Quize.findByIdAndUpdate(
     { _id: req.params.id },
     { forms: filterdForm, queries: filtredQuery },
@@ -57,7 +53,10 @@ router.put('/:id', (req, res) => {
 router.post('/:id/answer', (req, res) => {
   const { id } = req.params;
   const { answers } = req.body;
-  Anser.create({ belongsTo: id, answers })
+
+  const filtredAnsers = answers.filter((e) => Object.keys(e).includes('answer') && Object.keys(e).includes('belongsTo'));
+
+  Anser.create({ belongsTo: id, answers: filtredAnsers })
     .then((doc) => res.json({ doc }))
     .catch((e) => res.json({ error: `${e.name}::${e.message}` }));
 });
