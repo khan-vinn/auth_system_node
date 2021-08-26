@@ -1,14 +1,14 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */
 const mongoose = require('mongoose');
 const { nanoid } = require('nanoid');
 const UserSchema = require('../models/schema/user');
 const testSetUp = require('./testSetUp');
-// const ResumeSchema = require('../models/schema/resume');
-// const Resume = mongoose.model('TestResume', ResumeSchema);
 
 testSetUp();
 
 const User = mongoose.model('TestUser', UserSchema);
-describe('DB test setup', () => {
+describe('DB auth test setup', () => {
   const email = `${nanoid(5)}@gmail.com`;
   const password = nanoid(8);
   describe('create user with any invalid params', () => {
@@ -77,7 +77,9 @@ describe('DB test setup', () => {
       });
       it('update user email without any error', async () => {
         try {
-          const newUser = await User.findOneAndUpdate({ email }, { email: emailToChange }, { new: true });
+          const newUser = await User.findOneAndUpdate(
+            { email }, { email: emailToChange }, { new: true },
+          );
           expect(email).not.toBe(newUser.email);
         } catch (error) {
           expect(error).toBeFalsy();
@@ -112,5 +114,12 @@ describe('DB test setup', () => {
     afterAll(async () => {
       await User.findOneAndDelete({ email });
     });
+  });
+});
+
+describe('Quize app db setup', () => {
+  it('true is true', () => {
+    expect(true).toBe(true);
+    expect(true).toBeTruthy();
   });
 });
