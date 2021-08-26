@@ -23,6 +23,11 @@ const querySchema = mongoose.Schema({
 });
 
 const formSchema = mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    default: () => nanoid(6),
+  },
   question: {
     type: String,
     required: true,
