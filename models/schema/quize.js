@@ -46,8 +46,8 @@ const quizeSchema = mongoose.Schema({
     type: [formSchema],
   },
   belongsTo: {
-    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
 }, {
