@@ -166,6 +166,7 @@ describe('testing quize model', () => {
       quize = await Quize.create({ title, belongsTo: user._id });
       expect(quize.title).toBe(title);
       expect(quize.belongsTo).toBeTruthy();
+      expect(String(quize.belongsTo)).toBe(String(user._id));
     });
   });
 });
