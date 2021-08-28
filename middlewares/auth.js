@@ -26,7 +26,11 @@ function updateUserToken(req, res, next) {
         return generateAccessToken({ email: user.email, userAgent: req.get('User-Agent') });
       }
     })
-    .then((newToken) => User.findOneAndUpdate({ token }, { token: newToken }, { new: true }))
+    .then((newToken) => User.findOneAndUpdate(
+      { token },
+      { $pull: { token }, $push: { token: newToken } },
+      { new: true },
+    ))
     .then((user) => {
       res.locals.user = user;
       return next();
