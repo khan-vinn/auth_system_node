@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { userTokenVerify } = require('../middlewares/auth');
+const { isQuizeLord } = require('../middlewares/quize');
 const { userParamsTokenValidate } = require('../middlewares/user');
 const { Quize, Anser } = require('../models');
 
@@ -32,7 +33,7 @@ router.get('/:id', (req, res) => {
     .catch((e) => res.json({ error: `${e.name}::${e.message}` }));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', userParamsTokenValidate, userTokenVerify, isQuizeLord, (req, res) => {
   const { query, form } = req.body;
 
   const filterdForm = form.filter((e) => Object.keys(e).includes('question'));
@@ -42,7 +43,7 @@ router.put('/:id', (req, res) => {
     && e.invalidAnswers.length > 2);
 
   Quize.findByIdAndUpdate(
-    { _id: req.params.id },
+    { _id: res.locals.quize.id },
     { forms: filterdForm, queries: filtredQuery },
     { new: true },
   )
