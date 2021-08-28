@@ -24,7 +24,7 @@ const UserSchema = mongoose.Schema({
     default: false,
   },
   token: {
-    type: String,
+    type: [String],
   },
 }, { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } });
 

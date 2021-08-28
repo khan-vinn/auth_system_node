@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { nanoid } = require('nanoid');
 const supertest = require('supertest');
 
@@ -191,12 +192,13 @@ describe('Auth routes test setup', () => {
   });
   describe('token not equal from signIn and signUp', () => {
     it('compare two tokens', async () => {
+      const emailtoSignUp = nanoid(13);
       const responseFromSignUp = await request.post(`${signRoute}signup`)
         .set('Accept', 'application/json')
-        .send({ email: emailToSignUp, password: passwordToSignUp });
+        .send({ email: emailtoSignUp, password: passwordToSignUp });
       const responseFromSignIn = await request.post(`${signRoute}signin`)
         .set('Accept', 'application/json')
-        .send({ email: emailToSignUp, password: passwordToSignUp });
+        .send({ email: emailtoSignUp, password: passwordToSignUp });
       expect(responseFromSignIn.body.token).not.toBe(responseFromSignUp.body.token);
     });
   });

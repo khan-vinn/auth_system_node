@@ -26,7 +26,7 @@ function updateUserToken(req, res, next) {
         return generateAccessToken({ email: user.email, userAgent: req.get('User-Agent') });
       }
     })
-    .then((newToken) => User.findOneAndUpdate({ token }, { token: newToken }))
+    .then((newToken) => User.findOneAndUpdate({ token }, { token: newToken }, { new: true }))
     .then((user) => {
       res.locals.user = user;
       return next();
@@ -47,7 +47,7 @@ function userTokenVerify(req, res, next) {
     .then((user) => {
       if (!user) {
         throw new Error("don't find user");
-      } else if (user.token === token) {
+      } else if (user.token.includes(token)) {
         res.locals.user = user;
         return next();
       } else {
