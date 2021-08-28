@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { userTokenVerify } = require('../middlewares/auth');
-const { isQuizeLord } = require('../middlewares/quize');
+const { isQuizeLord, quizeFindWichBelongsToId } = require('../middlewares/quize');
 const { userParamsTokenValidate } = require('../middlewares/user');
 const { Quize, Anser } = require('../models');
 
@@ -14,14 +14,9 @@ router.post('/new', userParamsTokenValidate, userTokenVerify, (req, res) => {
     .catch((e) => res.json({ error: `${e.name}::${e.message}` }));
 });
 
-async function quizeFindWithId(id) {
-  const response = await Quize.find({ belongsTO: id });
-  return response;
-}
-
 router.get('/all/:id?', userParamsTokenValidate, userTokenVerify, (req, res) => {
   const { id } = req.params;
-  quizeFindWithId(id && id.length > 0 ? id : res.locals.user._id)
+  quizeFindWichBelongsToId(id && id.length > 0 ? id : res.locals.user._id)
     .then((docs) => res.json({ docs }))
     .catch((e) => res.json({ error: `${e.name} ${e.message}` }));
 });
